@@ -19,22 +19,21 @@ Build a modern, production-grade SaaS application where users can securely store
 - Login
 - Logout
 
-### Notes
-- Create notes
-- Edit notes
-- Delete notes
-- View notes
+### Knowledge Management
+- Create, edit, delete, and organize notes
+- Rich text editor
+- Tags and categories
 
-### Tags
-- Add tags
-- Remove tags
-- Filter by tags
+### Documents
+- Upload PDFs
+- View uploaded documents
 
 ### Search
-- Full-text search
+- Full-text search across notes and PDFs
 
 ### AI
-- Chat with your notes
+- Chat with notes and uploaded PDFs
+- AI-powered answers with source references
 
 ## 4. Non-Functional Requirements
 
