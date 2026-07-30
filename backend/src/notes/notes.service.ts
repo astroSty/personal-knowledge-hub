@@ -18,13 +18,44 @@ export class NotesService {
     });
   }
 
-  getNotes(userId: string) {
-    return this.prisma.note.findMany({
-      where: {
-        userId,
-      },
-    });
-  }
+  getNotes(
+  userId: string,
+  search?: string,
+  page = 1,
+  limit = 10,
+  sortBy = 'createdAt',
+  order: 'asc' | 'desc' = 'desc',
+) {
+  const skip = (page - 1) * limit;
+
+  return this.prisma.note.findMany({
+    where: {
+      userId,
+      ...(search && {
+        OR: [
+          {
+            title: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            content: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      }),
+    },
+    skip,
+    take: limit,
+
+    orderBy: {
+  [sortBy]: order,
+},
+  });
+}
 
   async updateNote(
   userId: string,
