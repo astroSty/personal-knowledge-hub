@@ -58,8 +58,9 @@ export function AuthProvider({
         const data: AuthUser = await response.json();
         setUser(data);
       } catch {
-        setUser(null);
-      } finally {
+         localStorage.removeItem("accessToken");
+         setUser(null);
+        } finally {
         setIsLoading(false);
       }
     }

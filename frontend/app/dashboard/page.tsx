@@ -60,7 +60,7 @@ export default function DashboardPage() {
 
   return (
     <main className="space-y-6">
-      <h1 className="text-3xl font-bold">My Notes</h1>
+      <h1 className="text-3xl font-bold">Dashboard</h1>
 
       {notes.length === 0 ? (
         <p className="text-muted-foreground">

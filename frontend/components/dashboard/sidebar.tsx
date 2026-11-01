@@ -1,24 +1,41 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
+  const links = [
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/dashboard/notes", label: "My Notes" },
+    { href: "/dashboard/settings", label: "Settings" },
+  ];
+
   return (
-    <aside className="w-64 min-h-screen border-r p-6">
-      <h2 className="text-xl font-bold mb-8">
+    <aside className="min-h-screen w-64 border-r p-6">
+      <h2 className="mb-8 text-xl font-bold">
         Knowledge Hub
       </h2>
 
       <nav className="space-y-4">
-        <Link href="/dashboard" className="block font-medium">
-          Dashboard
-        </Link>
+        {links.map((link) => {
+          const isActive = pathname === link.href;
 
-        <Link href="/dashboard/notes" className="block text-muted-foreground">
-          My Notes
-        </Link>
-
-        <Link href="/dashboard/settings" className="block text-muted-foreground">
-          Settings
-        </Link>
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`block rounded-md px-3 py-2 text-sm font-medium ${
+                isActive
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
       </nav>
     </aside>
   );

@@ -7,12 +7,8 @@ export default function Header() {
   const { user } = useAuth();
 
   return (
-    <header className="flex items-center justify-between border-b pb-4 mb-6">
-      <h1 className="text-xl font-semibold">
-        Dashboard
-      </h1>
-
-      <div className="flex items-center gap-4">
+    <header className="flex justify-end border-b pb-4 mb-6">
+    <div className="flex items-center gap-4">
         <span className="text-sm text-muted-foreground">
           Welcome back, {user?.email || "User"}!
         </span>
