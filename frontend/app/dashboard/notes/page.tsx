@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import EditNoteForm from "@/components/dashboard/edit-note-form";
 import DeleteNoteButton from "@/components/dashboard/delete-note-button";
+import { apiRequest } from "@/lib/api";
 
 type Note = {
   id: string;
@@ -44,20 +45,15 @@ export default function NotesPage() {
       }
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/notes?search=${encodeURIComponent(debouncedSearch)}&sortBy=${sortBy}&order=${order}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const data = await apiRequest<Note[]>(
+         `/notes?search=${encodeURIComponent(debouncedSearch)}&sortBy=${sortBy}&order=${order}`,
+         {
+          headers: {
+          Authorization: `Bearer ${token}`,
           },
+         },
         );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch notes");
-        }
-
-        const data: Note[] = await response.json();
         setNotes(data);
       } catch (err) {
         setError(
@@ -89,26 +85,16 @@ export default function NotesPage() {
     setCreating(true);
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/notes`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            title,
-            content,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to create note");
-      }
-
-      const newNote: Note = await response.json();
+      const newNote = await apiRequest<Note>("/notes", {
+       method: "POST",
+       headers: {
+        Authorization: `Bearer ${token}`,
+       },
+       body: JSON.stringify({
+       title,
+       content,
+       }),
+      });
 
       setNotes((currentNotes) => [
         newNote,
