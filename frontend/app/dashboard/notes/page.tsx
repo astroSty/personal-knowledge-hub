@@ -20,7 +20,19 @@ export default function NotesPage() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [order, setOrder] = useState("desc");
 
+  useEffect(() => {
+   const timeoutId = setTimeout(() => {
+    setDebouncedSearch(search);
+   }, 400);
+
+    return () => clearTimeout(timeoutId);
+  }, [search]);
+  
   useEffect(() => {
     async function fetchNotes() {
       const token = localStorage.getItem("accessToken");
@@ -33,7 +45,7 @@ export default function NotesPage() {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/notes`,
+          `${process.env.NEXT_PUBLIC_API_URL}/notes?search=${encodeURIComponent(debouncedSearch)}&sortBy=${sortBy}&order=${order}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -59,7 +71,7 @@ export default function NotesPage() {
     }
 
     fetchNotes();
-  }, []);
+  }, [debouncedSearch, sortBy, order]);
 
   async function handleCreateNote(
     event: FormEvent<HTMLFormElement>,
@@ -147,6 +159,57 @@ export default function NotesPage() {
       <p className="text-muted-foreground mt-2">
         Create and manage your personal notes.
       </p>
+
+      <div className="mt-6">
+        <input
+          type="text"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search your notes..."
+          className="w-full rounded-md border px-3 py-2"
+        />
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-4">
+       <div>
+        <label
+         htmlFor="sortBy"
+         className="mb-1 block text-sm font-medium"
+        >
+        Sort by
+        </label>
+
+        <select
+         id="sortBy"
+         value={sortBy}
+         onChange={(event) => setSortBy(event.target.value)}
+         className="rounded-md border px-3 py-2"
+        >
+        <option value="createdAt">Date Created</option>
+        <option value="updatedAt">Last Updated</option>
+        <option value="title">Title</option>
+        </select>
+       </div>
+
+      <div>
+       <label
+        htmlFor="order"
+        className="mb-1 block text-sm font-medium"
+       >
+       Order
+       </label>
+
+       <select
+        id="order"
+        value={order}
+        onChange={(event) => setOrder(event.target.value)}
+        className="rounded-md border px-3 py-2"
+       >
+       <option value="desc">Descending</option>
+       <option value="asc">Ascending</option>
+       </select>
+      </div>
+      </div>
 
       <form
         onSubmit={handleCreateNote}
