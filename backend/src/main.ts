@@ -7,9 +7,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   app.enableCors({
-  origin: 'http://localhost:3000',
+   origin: configService.get<string>('FRONTEND_URL'),
   });
 
   app.useGlobalFilters(new HttpExceptionFilter());
@@ -31,8 +32,6 @@ const config = new DocumentBuilder()
 const document = SwaggerModule.createDocument(app, config);
 
 SwaggerModule.setup('api', app, document);
-
-  const configService = app.get(ConfigService);
 
   const port = configService.get<number>('PORT') ?? 3001;
 
